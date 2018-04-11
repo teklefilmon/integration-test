@@ -29,4 +29,23 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 			.body("detail", equalTo("User with id " + 100 +" not found"));
 	}
 	
+	@Test
+	public void getUser_whenUserIdExist_shouldReturnOK() {
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = this.port;
+		RestAssured.given()
+		.log().ifValidationFails()
+			.accept(ContentType.JSON)
+			.contentType(ContentType.JSON)
+			.pathParam("idOrUsername", 1)
+		.when()
+			.get("/users/{idOrUsername}")
+		.then()
+		.log().ifValidationFails()
+			.statusCode(HttpStatus.OK.value()).and()
+			.body("firstName", equalTo("James")).and()
+			.body("lastName", equalTo("Alexander")).and()
+			.body("email", equalTo("james.alexander@nice.com")).and()
+			.body("userName", equalTo("james.alexander"));
+	}
 }
