@@ -108,6 +108,36 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 		validateUserDetails(user, location);
 	}
 	
+	@Test
+	public void updateUser_whenUserIdNotExist_shouldReturnNotFound() {
+		User user = new User("Ryan", "Owen", "ryan.owen@nice.com", "ryan.owen");
+		given()
+			.spec(spec)
+			.port(port)
+			.pathParam("id", 100)
+			.body(user)
+		.when()
+			.put("/users/{id}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
+	@Test
+	public void updateUser_whenUserIdExist_shouldReturnOK() {
+		User user = new User("Ryan", "Owen", "ryan.owen@nice.com", "ryan.owen");
+		given()
+			.spec(spec)
+			.port(port)
+			.pathParam("id", 1)
+			.body(user)
+		.when()
+			.put("/users/{id}")
+		.then()
+			.statusCode(HttpStatus.OK.value());
+		
+		validateUserDetails(user, "/users/1");
+	}
+	
 	private void validateUserDetails(User user, String url) {
 		User updatedUser = given()
 				.spec(spec)
