@@ -1,6 +1,7 @@
 package com.nice.integration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static io.restassured.RestAssured.*;
 import static org.junit.Assert.assertThat;
 
@@ -77,5 +78,17 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 		assertThat(user.getLastName(), equalTo("Alexander"));
 		assertThat(user.getEmail(), equalTo("james.alexander@nice.com"));
 		assertThat(user.getUserName(), equalTo("james.alexander"));
+	}
+	
+	@Test
+	public void getAllUsers_shouldReturnOK() {
+		given()
+			.spec(spec)
+			.port(port)
+		.when()
+			.get("/users")
+		.then()
+			.statusCode(HttpStatus.OK.value()).and()
+			.body("size()", is(3));
 	}
 }
