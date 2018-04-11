@@ -91,4 +91,32 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 			.statusCode(HttpStatus.OK.value()).and()
 			.body("size()", is(3));
 	}
+	
+	@Test
+	public void createUser_shouldReturnCreated() {
+		User user = new User("Ryan", "Owen", "ryan.owen@nice.com", "ryan.owen");
+		String location = given()
+			.spec(spec)
+			.port(port)
+			.request().body(user)
+		.when()
+			.post("/users")
+		.then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().header("location");
+		
+		User updatedUser = given()
+				.spec(spec)
+				.port(port)
+			.when()
+				.get(location)
+			.then()
+				.statusCode(HttpStatus.OK.value())
+				.extract().as(User.class);
+			
+			assertThat(updatedUser.getFirstName(), equalTo(user.getFirstName()));
+			assertThat(updatedUser.getLastName(), equalTo(user.getLastName()));
+			assertThat(updatedUser.getEmail(), equalTo(user.getEmail()));
+			assertThat(updatedUser.getUserName(), equalTo(user.getUserName()));
+	}
 }
