@@ -1,4 +1,4 @@
-package com.nice.integration;
+package com.nice;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

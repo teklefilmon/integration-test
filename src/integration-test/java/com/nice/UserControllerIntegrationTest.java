@@ -1,4 +1,4 @@
-package com.nice.integration;
+package com.nice;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
