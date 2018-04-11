@@ -1,13 +1,12 @@
 package com.nice.integration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static io.restassured.RestAssured.*;
 
 import org.junit.Test;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 
 public class UserControllerIntegrationTest extends IntegrationTest{
 	@LocalServerPort
@@ -15,11 +14,9 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 	
 	@Test
 	public void getUser_whenUserIdNotExist_shouldReturnNotFound() {
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = this.port;
-		RestAssured.given()
-			.accept(ContentType.JSON)
-			.contentType(ContentType.JSON)
+		given()
+			.spec(spec)
+			.port(port)
 			.pathParam("idOrUsername", 100)
 		.when()
 			.get("/users/{idOrUsername}")
@@ -31,12 +28,10 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 	
 	@Test
 	public void getUser_whenUserIdExist_shouldReturnOK() {
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = this.port;
-		RestAssured.given()
-		.log().ifValidationFails()
-			.accept(ContentType.JSON)
-			.contentType(ContentType.JSON)
+		given()
+			.spec(spec)
+			.port(port)
+			.log().ifValidationFails()
 			.pathParam("idOrUsername", 1)
 		.when()
 			.get("/users/{idOrUsername}")
