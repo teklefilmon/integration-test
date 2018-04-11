@@ -138,6 +138,30 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 		validateUserDetails(user, "/users/1");
 	}
 	
+	@Test
+	public void deleteUser_whenUserIdNotExist_shouldReturnNotFound() {
+		given()
+			.spec(spec)
+			.port(port)
+			.pathParam("id", 100)
+		.when()
+			.delete("/users/{id}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
+	@Test
+	public void deleteUser_whenUserIdExist_shouldReturnNoContent() {
+		given()
+			.spec(spec)
+			.port(port)
+			.pathParam("id", 1)
+		.when()
+			.delete("/users/{id}")
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
+	
 	private void validateUserDetails(User user, String url) {
 		User updatedUser = given()
 				.spec(spec)
