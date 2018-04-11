@@ -2,10 +2,13 @@ package com.nice.integration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.*;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+
+import com.nice.domain.User;
 
 
 public class UserControllerIntegrationTest extends IntegrationTest{
@@ -28,19 +31,19 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 	
 	@Test
 	public void getUser_whenUserIdExist_shouldReturnOK() {
-		given()
+		User user = given()
 			.spec(spec)
 			.port(port)
-			.log().ifValidationFails()
 			.pathParam("idOrUsername", 1)
 		.when()
 			.get("/users/{idOrUsername}")
 		.then()
-		.log().ifValidationFails()
 			.statusCode(HttpStatus.OK.value()).and()
-			.body("firstName", equalTo("James")).and()
-			.body("lastName", equalTo("Alexander")).and()
-			.body("email", equalTo("james.alexander@nice.com")).and()
-			.body("userName", equalTo("james.alexander"));
+			.extract().as(User.class);
+		
+		assertThat(user.getFirstName(), equalTo("James"));
+		assertThat(user.getLastName(), equalTo("Alexander"));
+		assertThat(user.getEmail(), equalTo("james.alexander@nice.com"));
+		assertThat(user.getUserName(), equalTo("james.alexander"));
 	}
 }
