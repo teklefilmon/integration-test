@@ -38,7 +38,39 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 		.when()
 			.get("/users/{idOrUsername}")
 		.then()
-			.statusCode(HttpStatus.OK.value()).and()
+			.statusCode(HttpStatus.OK.value())
+				.and()
+			.extract().as(User.class);
+		
+		assertThat(user.getFirstName(), equalTo("James"));
+		assertThat(user.getLastName(), equalTo("Alexander"));
+		assertThat(user.getEmail(), equalTo("james.alexander@nice.com"));
+		assertThat(user.getUserName(), equalTo("james.alexander"));
+	}
+	
+	@Test
+	public void getUser_whenUserNameNotExist_shouldReturnNotFound() {
+		given()
+			.spec(spec)
+			.port(port)
+			.pathParam("idOrUsername", "david.john")
+		.when()
+			.get("/users/{idOrUsername}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
+	@Test
+	public void getUser_whenUserNameExist_shouldReturnOK() {
+		User user = given()
+			.spec(spec)
+			.port(port)
+			.pathParam("idOrUsername", "james.alexander")
+		.when()
+			.get("/users/{idOrUsername}")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+				.and()
 			.extract().as(User.class);
 		
 		assertThat(user.getFirstName(), equalTo("James"));
