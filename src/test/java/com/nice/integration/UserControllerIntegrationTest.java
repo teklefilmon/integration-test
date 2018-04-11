@@ -105,11 +105,15 @@ public class UserControllerIntegrationTest extends IntegrationTest{
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().header("location");
 		
+		validateUserDetails(user, location);
+	}
+	
+	private void validateUserDetails(User user, String url) {
 		User updatedUser = given()
 				.spec(spec)
 				.port(port)
 			.when()
-				.get(location)
+				.get(url)
 			.then()
 				.statusCode(HttpStatus.OK.value())
 				.extract().as(User.class);
